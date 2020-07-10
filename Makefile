@@ -2,9 +2,11 @@ CC = gcc
 CFLAGS = -std=gnu18 -O2 -Wall -Wextra -Wpedantic -pthread -lpcap
 TARGET = server
 TARGETCLI = cli
-SRC = server.c \
+SRC = main.c \
  	  logerr.c \
-	  sniffer.c
+	  sniffer.c \
+	  cmdhandler.c
+
 SRCCLI =  cli.c \
 		  logerr.c
 
@@ -12,8 +14,9 @@ SRCCLI =  cli.c \
 
 all: $(TARGET) $(TARGETCLI)
 	rm -rf socket*
-	sudo ./server
-	#./cli
+	rm -rf *.txt
+	#sudo ./server
+
 
 $(TARGET): $(SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ -o $@

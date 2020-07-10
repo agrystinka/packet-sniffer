@@ -1,7 +1,8 @@
 #include "sniffer.h"
 #include "logerr.h"
+
 #include <netdb.h>
-#include <stdio.h> //For standard things
+#include <stdio.h>    //For standard things
 #include <stdlib.h>    //malloc
 #include <string.h>    //strlen
 #include <stdarg.h>
@@ -18,20 +19,33 @@
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
-#include <pcap.h>  /* GIMME a libpcap plz! */
+#include <pcap.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <time.h>
 
 extern int ACTIVE;
-int cnt = 0;
-pcap_t *handle;
-extern FILE *dump;
-extern FILE *loging;
 
+/*For numerating got packets*/
+time_t rawtime;
+struct tm * timeinfo;
+
+pcap_t *handle;
+
+/* declare pointers to packet headers */
 const struct tcphdr *tcp;            /* The TCP header */
 const struct udphdr *udp;            /* The UDP header */
-const struct icmphdr *icmp;         /* The UDP header */
+const struct icmphdr *icmp;          /* The ICMP header */
+
+/* declare pointers to packet headers */
+const struct sniff_ethernet *ethernet;  /* The ethernet header [1] */
+const struct ip *ip;                    /* The IP header */
+const char *payload;                    /* Packet payload */
+
+int size_ip;
+int size_tcp;
+int size_payload;
 
 int size_ip = 0, size_payload = 0;
 
@@ -39,7 +53,8 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 void printTCP(const struct tcphdr *tcp);
 void printUDP(const struct udphdr *udp);
 
-void sn_start(){
+void sn_start()
+{
     _log(1, "Sniffer start to catch packets\n");
 
     char *dev; /* name of the device to use */
@@ -57,19 +72,20 @@ void sn_start(){
     /* ask pcap to find a valid device for use to sniff on */
     dev = pcap_lookupdev(errbuf);
     if(!dev)
-        err_handle("Couldn't find default device:\n%s", errbuf);
+        err_catch("Couldn't find default device:\n%s", errbuf);
     /* print out device name */
     printf("DEV: %s\n", dev);
 
     /* ask pcap for the network address and mask of the device */
     ret = pcap_lookupnet(dev, &netp, &maskp, errbuf);
     if(ret == -1)
-        err_handle("Couldn't get netmask:\n%s", errbuf);
+        err_catch("Couldn't get netmask:\n%s", errbuf);
 
     /* get the network address in a human readable form */
     addr.s_addr = netp;
     net = inet_ntoa(addr);
     printf("NET: %s\n", net);
+
     /* do the same as above for the device's mask */
     addr.s_addr = maskp;
     mask = inet_ntoa(addr);
@@ -78,22 +94,22 @@ void sn_start(){
     /* open capture device */
     handle = pcap_open_live(dev, SNAP_LEN, 1, 1000, errbuf);
     if(!handle)
-        err_handle("Couldn't open device %s:\n%s\n", dev, errbuf);
+        err_catch("Couldn't open device %s:\n%s\n", dev, errbuf);
     _log(3, "pcap_open_live : done\n");
 
     if (pcap_compile(handle, &fp, filter_exp, 0, net) == -1)
-        err_handle("Couldn't parse filter %s:\n%s\n", filter_exp, pcap_geterr(handle));
+        err_catch("Couldn't parse filter %s:\n%s\n", filter_exp, pcap_geterr(handle));
     _log(3, "pcap_compile : done\n");
     /* apply the compiled filter */
     if (pcap_setfilter(handle, &fp) == -1)
-         err_handle("Could not install filter %s:\n%s\n", filter_exp, pcap_geterr(handle));
+         err_catch("Could not install filter %s:\n%s\n", filter_exp, pcap_geterr(handle));
     _log(3, "pcap_setfilter : done\n");
 
-    int loopret = pcap_loop(handle, 2, got_packet, NULL);
+    int loopret = pcap_loop(handle, -1, got_packet, NULL);
     _log(3, "pcap_loop : done\n");
 
     if (loopret == -1)
-        err_handle("%s\n", pcap_geterr(handle));
+        err_catch("%s\n", pcap_geterr(handle));
     if (loopret == -2)
         _log(1, "Sniffing succesefully finished.");
 }
@@ -101,31 +117,29 @@ void sn_start(){
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 {
     _log(2, "Sniffer got packet.\n");
+    ACTIVE = 1;
+    /*if user starrted to collect sniffed packets by usiing command START*/
     if(ACTIVE == 1){
-        cnt++;
+        /*get Current time*/
+        time ( &rawtime );
+        timeinfo = localtime ( &rawtime );
+
         if(!dump)
-            err_handle("Cannot open dump file.\n");
+            err_catch("Cannot open dump file.\n");
 
-        /* declare pointers to packet headers */
-        const struct sniff_ethernet *ethernet;  /* The ethernet header [1] */
-        const struct sniff_ip *ip;              /* The IP header */
-        //const struct sniff_tcp *tcp;            /* The TCP header */
-        const char *payload;                    /* Packet payload */
-
-        int size_ip;
-        int size_tcp;
-        int size_payload;
+        fprintf(dump, "\n----------------Packet %s", asctime(timeinfo));
 
         /* define ethernet header */
         ethernet = (struct sniff_ethernet*)(packet);
 
-        /* define/compute ip header offset */
-        ip = (struct sniff_ip*)(packet + SIZE_ETHERNET);
+        /*IP header offset */
+        ip = (struct ip*)(packet + SIZE_ETHERNET);
         size_ip = IP_HL(ip)*4;
-        if (size_ip < 20)
-            err_handle("Invalid IP header length: %u bytes\n", size_ip);
+        if (size_ip < 20){
+            fprintf(dump, "Invalid IP header length: %u bytes\n\n", size_ip);
+            return 0;
+        }
 
-        fprintf(dump, "\n---------------Packet #%d---------------\n", cnt);
         fprintf(dump, "SRC IP: %s\n", inet_ntoa(ip->ip_src));
         fprintf(dump, "DST IP: %s\n", inet_ntoa(ip->ip_dst));
 
@@ -146,8 +160,8 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
                 break;
             default:
                 printf("Protocol: unknown\n");
-                fprintf(dump, "# Protocol unknown\n");
-                break;
+                fprintf(dump, "# Protocol unknown\n\n");
+                return;
         }
         fprintf(dump, "\n");
     }
@@ -180,4 +194,9 @@ void printICMP(const struct udphdr *udp){
         fprintf(dump, "  (TTL Expired)\n");
     else if((unsigned int)(icmp->type) == ICMP_ECHOREPLY)
         fprintf(dump, "  (ICMP Echo Reply)\n");
+}
+
+void printPayload()
+{
+
 }

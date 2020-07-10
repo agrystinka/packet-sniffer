@@ -20,21 +20,20 @@ static const char *const USAGE = (
 );
 
 static const char *const HELP = (
-    "*  -a argument if provided results in verbose output with measured"
-    " exec time.\n"
-    "*  -t argument if provided specifies number of threads (%lld thread%s is"
-    " used by default). If given as -t 0, the number of threads will"
-    " be automatically picked as the number of CPUs available on the"
-    " system, as reported by nproc.\n"
-    "*  -n argument if provided specifies number of integration steps"
-    " (%lld steps is used by default)\n"
-    "*  start and stop arguments are required positionals specifing the"
-    " integration interval as [start; stop]\n"
+    " Demaon packet-sniffer is already run.\n"
+    " Use folowing arguments to interact with it.\n\n"
+    "*  start - argument is used to start writing sniffed packet information into dump.txt.\n"
+    "*  stop - argument is used to stop writing sniffed packet information into dump.txt.\n"
+    "*  reset - argument is used to clean dump.txt.\n"
+    "*  show - argument is used to show dump.txt.\n"
+    "*  show -i [ip] - argument is used to show received packets from [ip].\n"
+    "*  show -d [domain] - argument is used to show received packets from [domain].\n\n"
 );
 
-static const char *cmd_start  = "start",
-                  *cmd_stop   = "stop",
-                  *cmd_help   = "--help",
+static const char *cmd_start  = "start", //
+                  *cmd_stop   = "stop",  //
+                  *cmd_reset  = "reset", //
+                  *cmd_help   = "--help",//
                   *cmd_select = "select",
                   *cmd_stat   = "stat",
                   *cmd_show   = "show";
@@ -51,6 +50,10 @@ int main(int argc, char *argv[])
             printf("STOP\n");
             cmd = 2;
         }
+        else if (!strcmp(argv[1], cmd_reset)){
+            printf("RSET\n");
+            cmd = 3;
+        }
         else if (!strcmp(argv[1], cmd_help)){
             printf(HELP);
             return 0;
@@ -62,12 +65,12 @@ int main(int argc, char *argv[])
     else if (3 == argc){
         printf("3 OK\n");
         if (!strcmp(argv[1], cmd_show)){
-            printf("SHOW\n");
+            //printf("SHOW\n");
             cmd = 1;
             // domain or ip parse
         }
         else if (!strcmp(argv[1], cmd_stat)){
-            printf("STAT\n");
+            //printf("STAT\n");
             cmd = 2;
         }
         else{
@@ -81,7 +84,7 @@ int main(int argc, char *argv[])
     int sock;
     struct sockaddr sa0 = {AF_UNIX, MYADDRESS};
     struct sockaddr sa1 = {AF_UNIX, ADDRESS};
-    //socklen_t sa1_len;
+
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
 
     if (-1 == bind(sock, &sa0, sizeof(sa0) + sizeof(MYADDRESS)))
