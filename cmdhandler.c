@@ -13,24 +13,28 @@
 #include <sys/stat.h>
 #include <syslog.h>
 
-extern int ACTIVE; //Flag if deamon is writing into dump file.
-FILE *dump = NULL;
+
+// #define DUMPFILE "dump.txt"
+// extern int ACTIVE;
+// FILE *dump;
 
 void cmd_start(void)
 {
     if(ACTIVE == 0){
+        printf("START.\n");
         ACTIVE = 1;
-        dump = fopen("dump.txt","a+");
+        dump = fopen(DUMPFILE,"a+");
         if(!dump)
-            err_catch("Cannot open dump file.\n");
+           err_catch("Cannot open dump file 1.\n");
         _log(3, "Command START : done.");
     }
-    else _log(1, "Writing dump into file already ACTIVE.\n");
+    else _log(1, "Writing dump into file is already ACTIVE.\n");
 }
 
 void cmd_stop(void)
 {
-    if (ACTIVE = 0) {
+    if (ACTIVE == 1) {
+        printf("STOP.\n");
         fclose(dump);
         fclose(loging);
         _log(3, "Command STOP : done.\n");

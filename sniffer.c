@@ -1,3 +1,4 @@
+#include "main.h"
 #include "sniffer.h"
 #include "logerr.h"
 
@@ -25,7 +26,8 @@
 #include <signal.h>
 #include <time.h>
 
-extern int ACTIVE;
+// extern int ACTIVE;
+// extern FILE *dump;
 
 /*For numerating got packets*/
 time_t rawtime;
@@ -34,13 +36,13 @@ struct tm * timeinfo;
 pcap_t *handle;
 
 /* declare pointers to packet headers */
-const struct tcphdr *tcp;            /* The TCP header */
-const struct udphdr *udp;            /* The UDP header */
-const struct icmphdr *icmp;          /* The ICMP header */
+const struct tcphdr  *tcp;            /* The TCP header */
+const struct udphdr  *udp;            /* The UDP header */
+const struct icmphdr *icmp;           /* The ICMP header */
+const struct ip      *ip;             /* The IP header */
 
 /* declare pointers to packet headers */
 const struct sniff_ethernet *ethernet;  /* The ethernet header [1] */
-const struct ip *ip;                    /* The IP header */
 const char *payload;                    /* Packet payload */
 
 int size_ip;
@@ -117,15 +119,19 @@ void sn_start()
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 {
     _log(2, "Sniffer got packet.\n");
-    ACTIVE = 1;
+    printf("Sniffer got packet.\n");
+    //ACTIVE = 1;
     /*if user starrted to collect sniffed packets by usiing command START*/
     if(ACTIVE == 1){
+        printf("Sniffer is writting packet into dump 1.\n");
         /*get Current time*/
         time ( &rawtime );
         timeinfo = localtime ( &rawtime );
 
         if(!dump)
-            err_catch("Cannot open dump file.\n");
+            err_catch("Cannot open dump file  2.\n");
+
+        printf("Sniffer is writting packet into dump 2.\n");
 
         fprintf(dump, "\n----------------Packet %s", asctime(timeinfo));
 

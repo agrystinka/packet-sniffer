@@ -1,23 +1,21 @@
+#include "main.h"
 #include "cmdhandler.h"
 #include "sniffer.h"
 #include "logerr.h"
 
-#include <pthread.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
+// #include <pthread.h>
+// #include <sys/socket.h>
+// #include <unistd.h>
+// #include <errno.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+//
+// #include <signal.h>
+// #include <sys/types.h>
+// #include <sys/stat.h>
+// #include <syslog.h>
 
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <syslog.h>
-
-#define LOGFILE "log.txt"
-#define DUMPFILE "dump.txt"
-
-//FILE *dump = NULL;
+FILE *dump = NULL;
 FILE *loging = NULL;
 int ACTIVE = 0;
 
@@ -74,22 +72,25 @@ void deamon_create(void)
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
 
-    loging = fopen(LOGFILE, "w");
+    //loging = fopen(LOGFILE, "w");
     fprintf(loging, " Daemon process: %d\n", sid);
 }
 
 int main(void)
 {
+    loging = fopen(LOGFILE, "w");
     deamon_create();
 
     while (1) {
         fprintf(loging, " Daemon started.\n");
+        printf(" Daemon started.\n");
         daemon_core();
         //sleep(40);
         break;
     }
 
     fprintf(loging, " Daemon terminated.\n");
+    printf("Daemon terminated.\n");
     fclose(loging);
     return 0;
 }

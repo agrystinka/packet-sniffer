@@ -1,12 +1,10 @@
+#include "main.h"
 #include "logerr.h"
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <errno.h>
 #include <stdlib.h>
-
-// extern FILE *dump;
-// extern FILE *loging;
 
 int err_handle(const char *errmsg, ...)
 {
