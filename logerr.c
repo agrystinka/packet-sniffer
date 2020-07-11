@@ -6,6 +6,15 @@
 #include <errno.h>
 #include <stdlib.h>
 
+/**
+ * int err_handle(const char *errmsg, ...) - handle errors from CLI.
+ * @arg1: error message.
+ * @arg2: some additional arguments, that helps to clarify type of error.
+ *
+ * Show error messages in stderr while using CLI and finish CLI process with EXIT_FAILURE code.
+ *
+ * Return: EXIT_FAILURE code.
+ */
 int err_handle(const char *errmsg, ...)
 {
     va_list va;
@@ -19,6 +28,15 @@ int err_handle(const char *errmsg, ...)
     exit(EXIT_FAILURE);
 }
 
+/**
+ * int err_catch(const char *errmsg, ...)) - catches errors from daemon.
+ * @arg1: error message.
+ * @arg2: some additional arguments, that helps to clarify type of error.
+ *
+ * Writes error message into err.txt file and finishes daemon proces with EXIT_FAILURE code.
+ *
+ * Return: EXIT_FAILURE code.
+ */
 int err_catch(const char *errmsg, ...)
 {
     FILE *errlog;

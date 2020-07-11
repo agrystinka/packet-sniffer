@@ -10,6 +10,7 @@
 #include <sys/un.h>
 #include <errno.h>
 
+#define DUMPFILE "dump.txt"
 //  Change this names
 #define ADDRESS "socket1"
 #define MYADDRESS "socket2"
@@ -35,27 +36,42 @@ static const char *cmd_start  = "start", //
                   *cmd_reset  = "reset", //
                   *cmd_help   = "--help",//
                   *cmd_select = "select",
-                  *cmd_stat   = "stat",
-                  *cmd_show   = "show";
+                  *cmd_show   = "show",  //
+                  *show_all   = "-a";    //
+
+
+void command_show_a(void){
+    FILE *show = fopen(DUMPFILE, "r");
+    if (!show)
+        err_handle("Cannot open %s. It might be using by another process.\nTry to use command STOP, firstly.\n", DUMPFILE);
+    char c;
+    /* Print each character in the file */
+    while ((c = fgetc(show)) != EOF)
+        printf("%c", c);
+
+    fclose(show); /* close the file */
+    printf("\n");
+}
 
 int main(int argc, char *argv[])
 {   //use goto to go to err_handle
     int cmd = 0;
+
     if (2 == argc) {
         if (!strcmp(argv[1], cmd_start)){
-            printf("OK\n");
+            //printf("OK\n");
             cmd = 1;
         }
         else if (!strcmp(argv[1], cmd_stop)){
-            printf("STOP\n");
+            //printf("STOP\n");
             cmd = 2;
         }
         else if (!strcmp(argv[1], cmd_reset)){
-            printf("RSET\n");
+            //printf("RESET\n");
             cmd = 3;
         }
         else if (!strcmp(argv[1], cmd_help)){
-            printf(HELP);
+            //printf(HELP);
             return 0;
         }
         else{
@@ -63,16 +79,14 @@ int main(int argc, char *argv[])
         }
     }
     else if (3 == argc){
-        printf("3 OK\n");
         if (!strcmp(argv[1], cmd_show)){
-            //printf("SHOW\n");
-            cmd = 1;
-            // domain or ip parse
+            if(!strcmp(argv[2], "-a"))
+                command_show_a();
         }
-        else if (!strcmp(argv[1], cmd_stat)){
-            //printf("STAT\n");
-            cmd = 2;
-        }
+        // else if (!strcmp(argv[1], cmd_stat)){
+        //     //printf("STAT\n");
+        //     cmd = 2;
+        // }
         else{
             err_handle(USAGE, argv[0]);
         }

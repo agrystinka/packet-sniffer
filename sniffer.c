@@ -26,6 +26,7 @@
 #include <signal.h>
 #include <time.h>
 
+#define DUMPFILE "dump.txt"
 // extern int ACTIVE;
 // extern FILE *dump;
 
@@ -43,19 +44,21 @@ const struct ip      *ip;             /* The IP header */
 
 /* declare pointers to packet headers */
 const struct sniff_ethernet *ethernet;  /* The ethernet header [1] */
-const char *payload;                    /* Packet payload */
-
-int size_ip;
-int size_tcp;
-int size_payload;
-
-int size_ip = 0, size_payload = 0;
+int size_ip = 0;
 
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
 void printTCP(const struct tcphdr *tcp);
 void printUDP(const struct udphdr *udp);
 
-void sn_start()
+/**
+ * void sn_start() - packet sniffer.
+ *
+ * Firstly, it gets known info about dafault interface, its IP address and mask.
+ * Than it starts to sniff all packets transmited through this interface.
+ *
+ * Return: void.
+ */
+void sn_start(void)
 {
     _log(1, "Sniffer start to catch packets\n");
 
@@ -116,11 +119,20 @@ void sn_start()
         _log(1, "Sniffing succesefully finished.");
 }
 
+/**
+ * void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet) - catches packets.
+ * @arg1: pointer on NULL.
+ * @arg1: pointer on pcap header.
+ * @arg3: pointer on catched packet.
+ *
+ * If sniffer is in ACTIVE writing mode it writes packets info into dump file.
+ *
+ * Return: void.
+ */
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 {
     _log(2, "Sniffer got packet.\n");
-    printf("Sniffer got packet.\n");
-    //ACTIVE = 1;
+
     /*if user starrted to collect sniffed packets by usiing command START*/
     if(ACTIVE == 1){
         printf("Sniffer is writting packet into dump 1.\n");
@@ -133,14 +145,14 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
         printf("Sniffer is writting packet into dump 2.\n");
 
-        fprintf(dump, "\n----------------Packet %s", asctime(timeinfo));
+        fprintf(dump, "-----Packet %s", asctime(timeinfo));
 
         /* define ethernet header */
         ethernet = (struct sniff_ethernet*)(packet);
 
         /*IP header offset */
         ip = (struct ip*)(packet + SIZE_ETHERNET);
-        size_ip = IP_HL(ip)*4;
+        size_ip = (((ip)->ip_hl) & 0x0f)*4;
         if (size_ip < 20){
             fprintf(dump, "Invalid IP header length: %u bytes\n\n", size_ip);
             return 0;
@@ -151,7 +163,6 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
         /* determine protocol */
         switch(ip->ip_p) {
-            //fprintf(dump, "Protocol: ");
             case IPPROTO_TCP:
                 tcp = (struct tcphdr*)(packet + SIZE_ETHERNET + size_ip);
                 printTCP(tcp);
@@ -165,22 +176,43 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
                 printICMP(icmp);
                 break;
             default:
-                printf("Protocol: unknown\n");
-                fprintf(dump, "# Protocol unknown\n\n");
-                return;
+                fprintf(dump, "# Protocol unknown\n");
+                break;
         }
-        fprintf(dump, "\n");
+        fprintf(dump, "\n\n");
     }
+    return 0;
 }
 
+/**
+ * void printTCP(const struct tcphdr *tcp) - prints TCP header into dump file.
+ * @arg1: TCP header.
+ *
+ * If TCP header is avaliable, prints source port and description port.
+ *.
+ * Return: void.
+ */
 void printTCP(const struct tcphdr *tcp)
 {
     fprintf(dump, "Protocol: TCP\n");
-    if(tcp != NULL)
+    if(tcp != NULL){
         fprintf(dump, "SRC port: %d\n", ntohs(tcp->th_sport));
         fprintf(dump, "DST port: %d\n", ntohs(tcp->th_dport));
+    }
+    else{
+        fprintf(dump, "SRC port: unknown\n");
+        fprintf(dump, "SRC port: unknown\n");
+    }
 }
 
+/**
+ * void printUDP(const struct tcphdr *udp) - prints UDP header into dump file.
+ * @arg1: UDP header.
+ *
+ * If UDP header is avaliable, prints source port and description port.
+ *
+ * Return: void.
+ */
 void printUDP(const struct udphdr *udp)
 {
     fprintf(dump, "Protocol: UDP\n");
@@ -188,9 +220,20 @@ void printUDP(const struct udphdr *udp)
         fprintf(dump, "SRC port: %d\n", ntohs(udp->uh_sport));
         fprintf(dump, "DST port: %d\n", ntohs(udp->uh_dport));
     }
+    else{
+        fprintf(dump, "SRC port: unknown\n");
+        fprintf(dump, "SRC port: unknown\n");
+    }
 }
 
-void printICMP(const struct udphdr *udp){
+/**
+ * void printICMP(const struct tcphdr *udp) - prints ICMP packet into dump file.
+ * @arg1: ICMP packet.
+ *
+ * Return: void.
+ */
+void printICMP(const struct icmphdr *icmp)
+{
     fprintf(dump, "Protocol:  ICMP\n");
     fprintf(dump, "Type: %d",(unsigned int)(icmp->type));
 
@@ -200,9 +243,4 @@ void printICMP(const struct udphdr *udp){
         fprintf(dump, "  (TTL Expired)\n");
     else if((unsigned int)(icmp->type) == ICMP_ECHOREPLY)
         fprintf(dump, "  (ICMP Echo Reply)\n");
-}
-
-void printPayload()
-{
-
 }

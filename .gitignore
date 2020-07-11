@@ -1,5 +1,8 @@
 # Based on GitHub C gitignore (https://github.com/github/gitignore)
 
+# Project ignores
+*.txt
+
 # Prerequisites
 *.d
 

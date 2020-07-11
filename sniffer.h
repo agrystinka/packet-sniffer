@@ -25,11 +25,5 @@ struct sniff_ethernet {
         u_short ether_type;                     /* IP? ARP? RARP? etc */
 };
 
-#define IP_HL(ip)               (((ip)->ip_hl) & 0x0f)
-#define IP_V(ip)                (((ip)->ip_hl) >> 4)
-
-/* TCP header */
-typedef u_int tcp_seq;
-
 void sn_start();
 #endif

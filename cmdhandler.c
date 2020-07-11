@@ -13,11 +13,20 @@
 #include <sys/stat.h>
 #include <syslog.h>
 
-
 // #define DUMPFILE "dump.txt"
 // extern int ACTIVE;
 // FILE *dump;
 
+
+/**
+ * void cmd_start(void) - implementation of command START.
+ *
+ * Make signal to sniffer to start writing the catch packets dump into dump file, by settint ACTIVE into 1.
+ * If sniffer is already in ACTIVE writing mode, it dooes nothing.
+ * Functions makes logs into log file and catchs errors, which makes writting into file impossible.
+ *
+ * Return: void.
+ */
 void cmd_start(void)
 {
     if(ACTIVE == 0){
@@ -31,6 +40,15 @@ void cmd_start(void)
     else _log(1, "Writing dump into file is already ACTIVE.\n");
 }
 
+/**
+ * void cmd_stop(void) - implementation of command STOP.
+ *
+ * Make signal to sniffer to stop writing the catch packets dump into dump file, by settint ACTIVE into 0.
+ * If sniffer is already in DISACTIVE writing mode, it dooes nothing.
+ * Functions makes logs into log file and catchs errors, which makes writting into file impossible.
+ *
+ * Return: void.
+ */
 void cmd_stop(void)
 {
     if (ACTIVE == 1) {
@@ -42,6 +60,13 @@ void cmd_stop(void)
     else _log(1, "Writing dump into file already DISACTIVE.\n");
 }
 
+/**
+ * void cmd_reset(void) - implementation of command RESET.
+ *
+ * Reset the dump file by deleting all information in it.
+ *
+ * Return: void.
+ */
 void cmd_reset(void)
 {
     if(dump != NULL)
@@ -50,7 +75,39 @@ void cmd_reset(void)
     fclose(dump);
 }
 
-void cmdhandler()
+/**
+ * void cmd_reset(void) - implementation of command RESET.
+ *
+ * Reset the dump file by deleting all information in it.
+ *
+ * Return: void.
+ */
+void cmd_show_all(void)
+{
+    if(dump != NULL)
+        fclose(dump);
+}
+
+/**
+ * void cmdhandler(void) - handles commands got from cli by unix socket.
+ *
+ * This function is implementation of socket in server mode.
+ * It gets command codes from cli by unix socket and serve it.
+ * Also, it does signals for sniffer thread.
+
+ * This functions write its logs in the log file.
+ * If there are some problenms with socket, it catches errors.
+ *
+ * Possible commands are:
+ * 1 - code of command START.
+ * 2 - code of command STOP.
+ * 3 - code of command RESET.
+ *
+ * Context: this function works seperatly from sniffer in another thread.
+ *
+ * Return: void.
+ */
+void cmdhandler(void)
 {
     struct sockaddr sa0 = {AF_UNIX, ADDRESS};
     int sock = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -87,7 +144,9 @@ void cmdhandler()
                 cmd_reset();
                 break;
             case 4:
-                _log(1, "Got command SELECT.\n");  //change
+                _log(1, "Socket-in-server-mode got command SHOW ALL.\n");
+                cmd_show_all();
+                //write(sock, &cmd, sizeof(cmd));
                 break;
             case 5:
                 _log(1, "Got command STAT.\n"); //change

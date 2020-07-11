@@ -9,7 +9,6 @@
 // #include <errno.h>
 // #include <stdio.h>
 // #include <stdlib.h>
-//
 // #include <signal.h>
 // #include <sys/types.h>
 // #include <sys/stat.h>
@@ -19,6 +18,15 @@ FILE *dump = NULL;
 FILE *loging = NULL;
 int ACTIVE = 0;
 
+/**
+ * void daemon_core(void) - runs core functions of daemon process.
+ *
+ * Creates two threads:
+ * First one works in socket-in-server-mode and handles comands from CLI.
+ * Second one is packet sniffer.
+ *
+ * Return: void.
+ */
 void daemon_core(void)
 {
     _log(1, "Daemon sniffer run.\n");
@@ -36,6 +44,15 @@ void daemon_core(void)
     _log(3, "Threads finished work.\n");
 }
 
+
+/**
+ * void deamon_create(void) - creates deamon process.
+ *
+ * Creates daemon by creating child process and killing parent one.
+ * Close stderr, stdin, stdout for this process.
+ *
+ * Return: void.
+ */
 void deamon_create(void)
 {
     pid_t pid = 0;
@@ -72,14 +89,13 @@ void deamon_create(void)
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
 
-    //loging = fopen(LOGFILE, "w");
     fprintf(loging, " Daemon process: %d\n", sid);
 }
 
 int main(void)
 {
     loging = fopen(LOGFILE, "w");
-    deamon_create();
+    //deamon_create();
 
     while (1) {
         fprintf(loging, " Daemon started.\n");
