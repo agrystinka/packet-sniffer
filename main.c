@@ -16,6 +16,7 @@
 
 FILE *dump = NULL;
 FILE *loging = NULL;
+//FILE *wlog = NULL;
 int ACTIVE = 0;
 
 /**
@@ -29,19 +30,19 @@ int ACTIVE = 0;
  */
 void daemon_core(void)
 {
-    _log(1, "Daemon sniffer run.\n");
+    _log(1, loging, "Daemon sniffer run.\n");
     //ACTIVE = 0;
     pthread_t *threads = alloca(2 * sizeof *threads);
 
     int f_sinsm = pthread_create(&threads[0], NULL, &cmdhandler, NULL);
-    _log(3, "Socket-in-server-mode thread started.\n");
+    _log(3, loging, "Socket-in-server-mode thread started.\n");
 
     int f_sn= pthread_create(&threads[1], NULL, &sn_start, NULL);
-    _log(3, "Sniffer thread started.\n");
+    _log(3, loging, "Sniffer thread started.\n");
 
     pthread_join(threads[0], NULL);
     pthread_join(threads[1], NULL);
-    _log(3, "Threads finished work.\n");
+    _log(3, loging, "Threads finished work.\n");
 }
 
 
@@ -90,16 +91,23 @@ void deamon_create(void)
     close(STDERR_FILENO);
 
     fprintf(loging, " Daemon process: %d\n", sid);
+
+    FILE *d_id = fopen("daemon_id.txt", "w+");
+    if(!d_id)
+        _log(1, "Did not saved daemon id into file.\n");
+    fprintf(d_id, "%d\n", sid);
+    fclose(d_id);
 }
 
 int main(void)
 {
     loging = fopen(LOGFILE, "w");
-    //deamon_create();
+
+    deamon_create();
 
     while (1) {
         fprintf(loging, " Daemon started.\n");
-        printf(" Daemon started.\n");
+        //printf(" Daemon started %d.\n", sid);
         daemon_core();
         //sleep(40);
         break;

@@ -13,11 +13,6 @@
 #include <sys/stat.h>
 #include <syslog.h>
 
-// #define DUMPFILE "dump.txt"
-// extern int ACTIVE;
-// FILE *dump;
-
-
 /**
  * void cmd_start(void) - implementation of command START.
  *
@@ -32,12 +27,17 @@ void cmd_start(void)
     if(ACTIVE == 0){
         printf("START.\n");
         ACTIVE = 1;
+        /*Open dump file*/
         dump = fopen(DUMPFILE,"a+");
         if(!dump)
            err_catch("Cannot open dump file 1.\n");
-        _log(3, "Command START : done.");
+
+        /*Open dump file*/
+        _log(3, "Command START : done.\n");
     }
-    else _log(1, "Writing dump into file is already ACTIVE.\n");
+    else {
+        _log(1, "Writing dump into file is already ACTIVE.\n");
+    }
 }
 
 /**
@@ -52,12 +52,14 @@ void cmd_start(void)
 void cmd_stop(void)
 {
     if (ACTIVE == 1) {
-        printf("STOP.\n");
+        ACTIVE = 0;
         fclose(dump);
-        fclose(loging);
         _log(3, "Command STOP : done.\n");
+        //fclose(loging);
     }
-    else _log(1, "Writing dump into file already DISACTIVE.\n");
+    else {
+        _log(1, "Writing dump into file is already DISACTIVE.\n");
+    }
 }
 
 /**
@@ -71,21 +73,11 @@ void cmd_reset(void)
 {
     if(dump != NULL)
         fclose(dump);
-    dump = fopen("dump.txt","w");
+    dump = fopen("dump.txt","w+");
+    if(!dump)
+       err_catch("Cannot open dump file 1.\n");
     fclose(dump);
-}
-
-/**
- * void cmd_reset(void) - implementation of command RESET.
- *
- * Reset the dump file by deleting all information in it.
- *
- * Return: void.
- */
-void cmd_show_all(void)
-{
-    if(dump != NULL)
-        fclose(dump);
+    _log(3, "Command RESET : done.\n");
 }
 
 /**
@@ -123,7 +115,7 @@ void cmdhandler(void)
 
     while(1) {
         cli = accept(sock, NULL, NULL);
-        _log(1,"Socket-in-server-mode connected.\n"); //log
+        _log(1, "Socket-in-server-mode connected.\n"); //log
 
         int cmd;
 
@@ -143,18 +135,9 @@ void cmdhandler(void)
                 _log(1, "Socket-in-server-mode got command RESET.\n");
                 cmd_reset();
                 break;
-            case 4:
-                _log(1, "Socket-in-server-mode got command SHOW ALL.\n");
-                cmd_show_all();
-                //write(sock, &cmd, sizeof(cmd));
-                break;
-            case 5:
-                _log(1, "Got command STAT.\n"); //change
-                break;
             default:
                 _log(1, "Socket-in-server-mode got INVALID COMMAND.\n");  //or err_catch ?
         }
         close(cli);
-        // delete socket file 2
     }
 }

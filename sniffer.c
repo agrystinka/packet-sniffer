@@ -27,8 +27,6 @@
 #include <time.h>
 
 #define DUMPFILE "dump.txt"
-// extern int ACTIVE;
-// extern FILE *dump;
 
 /*For numerating got packets*/
 time_t rawtime;
@@ -135,15 +133,14 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
     /*if user starrted to collect sniffed packets by usiing command START*/
     if(ACTIVE == 1){
-        printf("Sniffer is writting packet into dump 1.\n");
+        _log(2, "Sniffer is writting packet.\n");
+        
         /*get Current time*/
         time ( &rawtime );
         timeinfo = localtime ( &rawtime );
 
         if(!dump)
             err_catch("Cannot open dump file  2.\n");
-
-        printf("Sniffer is writting packet into dump 2.\n");
 
         fprintf(dump, "-----Packet %s", asctime(timeinfo));
 
@@ -234,7 +231,7 @@ void printUDP(const struct udphdr *udp)
  */
 void printICMP(const struct icmphdr *icmp)
 {
-    fprintf(dump, "Protocol:  ICMP\n");
+    fprintf(dump, "Protocol: ICMP\n");
     fprintf(dump, "Type: %d",(unsigned int)(icmp->type));
 
     if((unsigned int)(icmp->type) == ICMP_ECHO)

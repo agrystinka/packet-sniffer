@@ -19,10 +19,13 @@
 #include <stdlib.h>
 
 #define LOGFILE "log.txt"
+//#define WLOGFILE "writinglog.txt"
 #define DUMPFILE "dump.txt"
 
 extern FILE *dump;
 extern FILE *loging;
+extern FILE *wlog ;
 extern int ACTIVE; //Flag if deamon is writing into dump file.
+
 
 #endif

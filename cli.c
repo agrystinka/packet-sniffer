@@ -45,6 +45,7 @@ void command_show_a(void){
     if (!show)
         err_handle("Cannot open %s. It might be using by another process.\nTry to use command STOP, firstly.\n", DUMPFILE);
     char c;
+
     /* Print each character in the file */
     while ((c = fgetc(show)) != EOF)
         printf("%c", c);
@@ -59,19 +60,16 @@ int main(int argc, char *argv[])
 
     if (2 == argc) {
         if (!strcmp(argv[1], cmd_start)){
-            //printf("OK\n");
             cmd = 1;
         }
         else if (!strcmp(argv[1], cmd_stop)){
-            //printf("STOP\n");
             cmd = 2;
         }
         else if (!strcmp(argv[1], cmd_reset)){
-            //printf("RESET\n");
             cmd = 3;
         }
         else if (!strcmp(argv[1], cmd_help)){
-            //printf(HELP);
+            printf(HELP);
             return 0;
         }
         else{
@@ -82,11 +80,11 @@ int main(int argc, char *argv[])
         if (!strcmp(argv[1], cmd_show)){
             if(!strcmp(argv[2], "-a"))
                 command_show_a();
+            // else if(!strcmp(argv[2], "-i"))
+            //     command_show_a(argv[3]);
+            else
+                err_handle(USAGE, argv[0]);
         }
-        // else if (!strcmp(argv[1], cmd_stat)){
-        //     //printf("STAT\n");
-        //     cmd = 2;
-        // }
         else{
             err_handle(USAGE, argv[0]);
         }
@@ -112,4 +110,7 @@ int main(int argc, char *argv[])
     close(sock);
     unlink(MYADDRESS);
     return 0;
+
+    // err_h:
+    //     err_handle(USAGE, argv[0]);
 }

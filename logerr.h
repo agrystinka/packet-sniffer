@@ -7,15 +7,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-//#define LOGFILE "log.txt"
-//#define DUMPFILE "dump.txt"
-
-
-#define LVL 3
-
-//extern int ACTIVE; //Flag if deamon is writing into dump file.
-//extern FILE *dump;
-//extern FILE *loging;
+#define LVL 1
 
 #define RESET   "\033[0m"       //no color
 #define RED     "\033[1;31m"    //Errors
