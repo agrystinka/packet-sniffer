@@ -1,14 +1,10 @@
 #include "logerr.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/un.h>
 #include <errno.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define DUMPFILE "dump.txt"
 #define ADDRESS "socket"
@@ -33,7 +29,6 @@ static const char *cmd_start  = "start", //
                   *cmd_stop   = "stop",  //
                   *cmd_reset  = "reset", //
                   *cmd_help   = "--help",//
-                  *cmd_select = "select",
                   *cmd_show   = "show",  //
                   *show_all   = "-a";    //
 
@@ -76,7 +71,7 @@ int main(int argc, char *argv[])
     }
     else if (3 == argc){
         if (!strcmp(argv[1], cmd_show)){
-            if(!strcmp(argv[2], "-a"))
+            if(!strcmp(argv[2], show_all))
                 command_show_a();
             // else if(!strcmp(argv[2], "-i"))
             //     command_show_a(argv[3]);

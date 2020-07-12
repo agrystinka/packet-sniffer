@@ -3,20 +3,10 @@
 #include "sniffer.h"
 #include "logerr.h"
 
-// #include <pthread.h>
-// #include <sys/socket.h>
-// #include <unistd.h>
-// #include <errno.h>
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <signal.h>
-// #include <sys/types.h>
-// #include <sys/stat.h>
-// #include <syslog.h>
-
 FILE *dump = NULL;
 FILE *loging = NULL;
 int ACTIVE = 0;
+
 
 void sig_term_handler(int signum)
 {
@@ -69,7 +59,7 @@ void daemon_core(void)
  *
  * Creates daemon by creating child process and killing parent one.
  * Close stderr, stdin, stdout for this process.
- * Writes pid of daemon process into file. 
+ * Writes pid of daemon process into file.
  * It can be used to kill deamon process quickly without search it in process list.
  *
  * Return: void.

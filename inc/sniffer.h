@@ -1,10 +1,7 @@
 #ifndef SNIFFER
 #define SNIFFER
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <pcap.h>
-#include <errno.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

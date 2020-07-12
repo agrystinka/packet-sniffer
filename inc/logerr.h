@@ -2,17 +2,25 @@
 #define LOGERR
 
 #include "main.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdlib.h>
 
 #define LVL 3
 
 #define RESET   "\033[0m"       //no color
 #define RED     "\033[1;31m"    //Errors
 
-#define _log(lvl, msg, ...) do {                        \
+/**
+ * Macros that implements daemon loging.
+ * @lvl: type of log.
+ * @msg: log message.
+ *
+ * It writes 3 types of logs:
+ *   * INFO - short loging of main daemon actions.
+ *   * SNIFFER logs - messages about catched packets.
+ *   * DEBUG - more detailed logging of daemon actions.
+ *
+ * Return: void.
+ */
+#define _log(lvl, msg) do {                        \
     if (LVL >= lvl && NULL !=msg)                       \
         if(lvl == 1)                                    \
             fprintf(loging, ">>    INFO: %s", msg);     \

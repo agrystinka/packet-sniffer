@@ -1,19 +1,14 @@
 #include "main.h"
 #include "logerr.h"
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdlib.h>
-
 /**
- * int err_handle(const char *errmsg, ...) - handle errors from CLI.
- * @arg1: error message.
- * @arg2: some additional arguments, that helps to clarify type of error.
+ * Handle errors from CLI.
+ * @errmsg: pointer on error message.
+ * @...: some additional arguments, that help to clarify type of error.
  *
  * Show error messages in stderr while using CLI and finish CLI process with EXIT_FAILURE code.
  *
- * Return: EXIT_FAILURE code.
+ * Return: EXIT_FAILURE.
  */
 int err_handle(const char *errmsg, ...)
 {
@@ -29,13 +24,13 @@ int err_handle(const char *errmsg, ...)
 }
 
 /**
- * int err_catch(const char *errmsg, ...)) - catches errors from daemon.
- * @arg1: error message.
- * @arg2: some additional arguments, that helps to clarify type of error.
+ * Catches errors from daemon.
+ * @errmsg: pointer on error message.
+ * @...: some additional arguments, that help to clarify type of error.
  *
  * Writes error message into err.txt file and finishes daemon proces with EXIT_FAILURE code.
  *
- * Return: EXIT_FAILURE code.
+ * Return: EXIT_FAILURE.
  */
 int err_catch(const char *errmsg, ...)
 {

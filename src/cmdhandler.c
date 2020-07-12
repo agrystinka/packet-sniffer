@@ -1,18 +1,6 @@
 #include "cmdhandler.h"
 #include "logerr.h"
 
-#include <pthread.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <syslog.h>
-
 /**
  * Implementation of command START.
  *
@@ -115,7 +103,7 @@ void cmdhandler(void)
 
     while(1) {
         cli = accept(sock, NULL, NULL);
-        _log(1, "Socket-in-server-mode connected.\n"); //log
+        _log(3, "Socket-in-server-mode connected.\n"); //log
 
         int cmd;
 
