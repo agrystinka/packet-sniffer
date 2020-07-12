@@ -49,9 +49,9 @@ void printTCP(const struct tcphdr *tcp);
 void printUDP(const struct udphdr *udp);
 
 /**
- * void sn_start() - packet sniffer.
+ * Starts packet sniffing.
  *
- * Firstly, it gets known info about dafault interface, its IP address and mask.
+ * Firstly, it gets info about dafault interface, its IP address and mask.
  * Than it starts to sniff all packets transmited through this interface.
  *
  * Return: void.
@@ -118,10 +118,10 @@ void sn_start(void)
 }
 
 /**
- * void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet) - catches packets.
- * @arg1: pointer on NULL.
- * @arg1: pointer on pcap header.
- * @arg3: pointer on catched packet.
+ * Catches packets.
+ * @args: pointer on NULL.
+ * @header: pointer on pcap header.
+ * @packet: pointer on catched packet.
  *
  * If sniffer is in ACTIVE writing mode it writes packets info into dump file.
  *
@@ -182,8 +182,8 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 }
 
 /**
- * void printTCP(const struct tcphdr *tcp) - prints TCP header into dump file.
- * @arg1: TCP header.
+ * Prints TCP header into dump file.
+ * @tcp: pointer on TCP header.
  *
  * If TCP header is avaliable, prints source port and description port.
  *.
@@ -203,8 +203,8 @@ void printTCP(const struct tcphdr *tcp)
 }
 
 /**
- * void printUDP(const struct tcphdr *udp) - prints UDP header into dump file.
- * @arg1: UDP header.
+ * Prints UDP header into dump file.
+ * @udp: pointer on UDP header.
  *
  * If UDP header is avaliable, prints source port and description port.
  *
@@ -224,8 +224,8 @@ void printUDP(const struct udphdr *udp)
 }
 
 /**
- * void printICMP(const struct tcphdr *udp) - prints ICMP packet into dump file.
- * @arg1: ICMP packet.
+ * Prints ICMP packet into dump file.
+ * @icmp: pointer on ICMP packet.
  *
  * Return: void.
  */

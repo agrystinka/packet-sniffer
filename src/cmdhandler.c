@@ -14,7 +14,7 @@
 #include <syslog.h>
 
 /**
- * void cmd_start(void) - implementation of command START.
+ * Implementation of command START.
  *
  * Make signal to sniffer to start writing the catch packets dump into dump file, by settint ACTIVE into 1.
  * If sniffer is already in ACTIVE writing mode, it dooes nothing.
@@ -41,7 +41,7 @@ void cmd_start(void)
 }
 
 /**
- * void cmd_stop(void) - implementation of command STOP.
+ * Implementation of command STOP.
  *
  * Make signal to sniffer to stop writing the catch packets dump into dump file, by settint ACTIVE into 0.
  * If sniffer is already in DISACTIVE writing mode, it dooes nothing.
@@ -63,7 +63,7 @@ void cmd_stop(void)
 }
 
 /**
- * void cmd_reset(void) - implementation of command RESET.
+ * Implementation of command RESET.
  *
  * Reset the dump file by deleting all information in it.
  *
@@ -81,7 +81,7 @@ void cmd_reset(void)
 }
 
 /**
- * void cmdhandler(void) - handles commands got from cli by unix socket.
+ * Handles commands got from cli by unix socket.
  *
  * This function is implementation of socket in server mode.
  * It gets command codes from cli by unix socket and serve it.

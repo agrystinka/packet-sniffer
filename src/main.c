@@ -37,11 +37,11 @@ void catch_sigterm()
 }
 
 /**
- * void daemon_core(void) - runs core functions of daemon process.
+ * Runs core functions of daemon process.
  *
  * Creates two threads:
- * First one works in socket-in-server-mode and handles comands from CLI.
- * Second one is packet sniffer.
+ * First thread works in socket-in-server-mode and handles comands from CLI.
+ * Second thread is packet sniffer.
  *
  * Return: void.
  */
@@ -65,10 +65,12 @@ void daemon_core(void)
 
 
 /**
- * void deamon_create(void) - creates deamon process.
+ * Creates deamon process.
  *
  * Creates daemon by creating child process and killing parent one.
  * Close stderr, stdin, stdout for this process.
+ * Writes pid of daemon process into file. 
+ * It can be used to kill deamon process quickly without search it in process list.
  *
  * Return: void.
  */
