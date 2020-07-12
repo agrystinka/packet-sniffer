@@ -136,8 +136,9 @@ void cmdhandler(void)
                 cmd_reset();
                 break;
             default:
-                _log(1, "Socket-in-server-mode got INVALID COMMAND.\n");  //or err_catch ?
+                _log(1, "Socket-in-server-mode got INVALID COMMAND.\n");
         }
         close(cli);
     }
+    unlink(ADDRESS);
 }

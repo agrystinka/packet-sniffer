@@ -11,9 +11,7 @@
 #include <errno.h>
 
 #define DUMPFILE "dump.txt"
-//  Change this names
-#define ADDRESS "socket1"
-#define MYADDRESS "socket2"
+#define ADDRESS "socket"
 
 static const char *const USAGE = (
     "Invalid arguments.\n"
@@ -50,12 +48,12 @@ void command_show_a(void){
     while ((c = fgetc(show)) != EOF)
         printf("%c", c);
 
-    fclose(show); /* close the file */
+    fclose(show);
     printf("\n");
 }
 
 int main(int argc, char *argv[])
-{   //use goto to go to err_handle
+{
     int cmd = 0;
 
     if (2 == argc) {
@@ -93,24 +91,17 @@ int main(int argc, char *argv[])
         err_handle(USAGE, argv[0]);
     }
 
+    /*Create and open socket to comuticate with packet sniffer daemon*/
     int sock;
-    struct sockaddr sa0 = {AF_UNIX, MYADDRESS};
     struct sockaddr sa1 = {AF_UNIX, ADDRESS};
 
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
 
-    if (-1 == bind(sock, &sa0, sizeof(sa0) + sizeof(MYADDRESS)))
-            err_handle("Socket bind failed (%s)", strerror(errno));
-
-    if (-1 == connect(sock, &sa1, sizeof(sa1) + sizeof(MYADDRESS)))
+    if (-1 == connect(sock, &sa1, sizeof(sa1) + sizeof(ADDRESS)))
         err_handle("Connection Failed \n", strerror(errno));
 
     write(sock, &cmd, sizeof(cmd));
 
     close(sock);
-    unlink(MYADDRESS);
     return 0;
-
-    // err_h:
-    //     err_handle(USAGE, argv[0]);
 }

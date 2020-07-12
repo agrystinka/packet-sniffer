@@ -13,6 +13,6 @@
 #include <sys/stat.h>
 #include <syslog.h>
 
-#define ADDRESS "socket1"
+#define ADDRESS "socket"
 void cmdhandler();
 #endif

@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#define LVL 1
+#define LVL 3
 
 #define RESET   "\033[0m"       //no color
 #define RED     "\033[1;31m"    //Errors

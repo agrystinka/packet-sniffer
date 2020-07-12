@@ -1,41 +1,50 @@
 CC = gcc
 CFLAGS = -std=gnu18 -O2 -Wall -Wextra -Wpedantic -pthread -lpcap
-TARGET = server
-TARGETCLI = cli
-SRC = main.c \
- 	  logerr.c \
-	  sniffer.c \
-	  cmdhandler.c
+SNIFFER = packet-sniffer
+CLI = cli
 
-SRCCLI =  cli.c \
-		  logerr.c
+SRC_SNIFFER = main.c \
+ 	          logerr.c \
+	          sniffer.c \
+	          cmdhandler.c
+
+SRC_CLI =  cli.c \
+		   logerr.c
+
+BUILDDIR = ./build
+SRCDIR = ./src
+INCDIR = ./inc
 
 .PHONY: all clean tidy
 
-all: $(TARGET) $(TARGETCLI)
-	rm -rf socket*
+all: $(BUILDDIR) $(BUILDDIR)/$(SNIFFER) $(BUILDDIR)/$(CLI)
+	rm -rf socket
 	rm -rf *.txt
-	#sudo ./server
 
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TARGET): $(SRC:.c=.o)
+$(BUILDDIR)/$(SNIFFER): $(addprefix $(BUILDDIR)/,$(SRC_SNIFFER:.c=.o))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TARGETCLI): $(SRCCLI:.c=.o)
+$(BUILDDIR)/$(CLI): $(addprefix $(BUILDDIR)/,$(SRC_CLI:.c=.o))
 	$(CC) $(CFLAGS) $^ -o $@
+
+$(BUILDDIR):
+	mkdir -p $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o
+	rm -rf $(BUILDDIR)
 
 tidy: clean
-	rm -rf $(TARGET)
+	rm -rf *.txt
 
 run:
-	$TARGET
-	$TARGETCLI
+	sudo $(BUILDDIR)/$(SNIFFER)
+	#sudo $(CLI)
 
 lint: | lint-splint lint-oclint
 

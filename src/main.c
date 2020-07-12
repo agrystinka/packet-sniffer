@@ -16,8 +16,25 @@
 
 FILE *dump = NULL;
 FILE *loging = NULL;
-//FILE *wlog = NULL;
 int ACTIVE = 0;
+
+void sig_term_handler(int signum)
+{
+    _log(1, "SIGTERM received.\n");
+    fclose(loging);
+    fclose(dump);
+}
+
+void catch_sigterm()
+{
+    static struct sigaction _sigact;
+
+    memset(&_sigact, 0, sizeof(_sigact));
+    _sigact.sa_sigaction = sig_term_handler;
+    _sigact.sa_flags = SA_SIGINFO;
+
+    sigaction(SIGTERM, &_sigact, NULL);
+}
 
 /**
  * void daemon_core(void) - runs core functions of daemon process.
@@ -30,19 +47,20 @@ int ACTIVE = 0;
  */
 void daemon_core(void)
 {
-    _log(1, loging, "Daemon sniffer run.\n");
-    //ACTIVE = 0;
+    _log(1, "Daemon sniffer run.\n");
     pthread_t *threads = alloca(2 * sizeof *threads);
 
+    catch_sigterm();
+
     int f_sinsm = pthread_create(&threads[0], NULL, &cmdhandler, NULL);
-    _log(3, loging, "Socket-in-server-mode thread started.\n");
+    _log(3, "Socket-in-server-mode thread started.\n");
 
     int f_sn= pthread_create(&threads[1], NULL, &sn_start, NULL);
-    _log(3, loging, "Sniffer thread started.\n");
+    _log(3, "Sniffer thread started.\n");
 
     pthread_join(threads[0], NULL);
     pthread_join(threads[1], NULL);
-    _log(3, loging, "Threads finished work.\n");
+    _log(3, "Threads finished work.\n");
 }
 
 
@@ -76,7 +94,6 @@ void deamon_create(void)
         exit(EXIT_FAILURE);
 
     /* Catch, ignore and handle signals */
-    /*TODO: Implement a working signal handler */
     signal(SIGCHLD, SIG_IGN);
     signal(SIGHUP, SIG_IGN);
 
@@ -92,7 +109,7 @@ void deamon_create(void)
 
     fprintf(loging, " Daemon process: %d\n", sid);
 
-    FILE *d_id = fopen("daemon_id.txt", "w+");
+    FILE *d_id = fopen(IDFILE, "w+");
     if(!d_id)
         _log(1, "Did not saved daemon id into file.\n");
     fprintf(d_id, "%d\n", sid);
@@ -107,9 +124,7 @@ int main(void)
 
     while (1) {
         fprintf(loging, " Daemon started.\n");
-        //printf(" Daemon started %d.\n", sid);
         daemon_core();
-        //sleep(40);
         break;
     }
 
