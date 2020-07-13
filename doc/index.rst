@@ -4,6 +4,11 @@
 Packet Sniffer Documentation
 ============================
 
+Packet Sniffer is a tool that helps to analyze traffic.
+
+This packet sniffer can be run like a daemon process and sniff all income and outcome packets on default interface (like eth, enp etc.).
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
