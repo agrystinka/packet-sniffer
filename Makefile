@@ -17,7 +17,7 @@ INCDIR = ./inc
 
 .PHONY: all clean tidy
 
-all: $(BUILDDIR) $(BUILDDIR)/$(SNIFFER) $(BUILDDIR)/$(CLI)
+all: $(BUILDDIR) $(SNIFFER) $(CLI)
 	rm -rf socket
 	rm -rf *.txt
 
@@ -28,10 +28,10 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) $(addprefix -I,$(INCDIR)) -c $< -o $@
 
-$(BUILDDIR)/$(SNIFFER): $(addprefix $(BUILDDIR)/,$(SRC_SNIFFER:.c=.o))
+$(SNIFFER): $(addprefix $(BUILDDIR)/,$(SRC_SNIFFER:.c=.o))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILDDIR)/$(CLI): $(addprefix $(BUILDDIR)/,$(SRC_CLI:.c=.o))
+$(CLI): $(addprefix $(BUILDDIR)/,$(SRC_CLI:.c=.o))
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(BUILDDIR):
