@@ -9,6 +9,11 @@
 #include <netinet/if_ether.h>
 #include <time.h>
 
+static void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
+static void printTCP(const struct tcphdr *tcp);
+static void printUDP(const struct udphdr *udp);
+static void printICMP(const struct icmphdr *icmp);
+
 /* for numerating got packets */
 time_t rawtime;
 struct tm *timeinfo;
@@ -20,14 +25,9 @@ const struct tcphdr  *tcp;            /* The TCP header */
 const struct udphdr  *udp;            /* The UDP header */
 const struct icmphdr *icmp;           /* The ICMP header */
 const struct ip      *ip;             /* The IP header */
+const struct sniff_ethernet *ethernet;/* The ethernet header */
 
-/* declare pointers to packet headers */
-const struct sniff_ethernet *ethernet;
 int size_ip = 0;
-
-void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
-void printTCP(const struct tcphdr *tcp);
-void printUDP(const struct udphdr *udp);
 
 /**
  * Starts packet sniffing.
@@ -103,7 +103,7 @@ void sn_start(void)
  *
  * Return: void.
  */
-void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
+static void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 {
     _log(2, "Sniffer got packet.\n");
 
@@ -154,7 +154,6 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
         }
         fprintf(dump, "\n\n");
     }
-    return 0;
 }
 
 /**
@@ -165,7 +164,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
  *.
  * Return: void.
  */
-void printTCP(const struct tcphdr *tcp)
+static void printTCP(const struct tcphdr *tcp)
 {
     fprintf(dump, "Protocol: TCP\n");
     if(tcp != NULL){
@@ -186,7 +185,7 @@ void printTCP(const struct tcphdr *tcp)
  *
  * Return: void.
  */
-void printUDP(const struct udphdr *udp)
+static void printUDP(const struct udphdr *udp)
 {
     fprintf(dump, "Protocol: UDP\n");
     if(udp != NULL){
@@ -205,7 +204,7 @@ void printUDP(const struct udphdr *udp)
  *
  * Return: void.
  */
-void printICMP(const struct icmphdr *icmp)
+static void printICMP(const struct icmphdr *icmp)
 {
     fprintf(dump, "Protocol: ICMP\n");
     fprintf(dump, "Type: %d",(unsigned int)(icmp->type));

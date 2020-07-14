@@ -1,12 +1,7 @@
 #ifndef LOGERR
 #define LOGERR
 
-//#include "main.h"
-
 #define LVL 3
-
-#define RESET   "\033[0m"       //no color
-#define RED     "\033[1;31m"    //Errors
 
 /**
  * Macros that implements daemon loging.

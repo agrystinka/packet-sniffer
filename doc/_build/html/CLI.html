@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User guide &#8212; packet-sniffer  documentation</title>
+    <title>CLI &#8212; packet-sniffer  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Command handler" href="cmd_handler.html" />
-    <link rel="prev" title="Packet Sniffer Documentation" href="index.html" />
+    <link rel="prev" title="User guide" href="userguide.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,28 +33,46 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="user-guide">
-<h1>User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
-<p>It is about how to use Packet Sniffer.</p>
-<p><strong>Be ready that work with packet-sniffer requires root privileges.</strong></p>
-<p>Before using any CLI, run the daemon. To do it, you might use:</p>
-<p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">run</span></code>  or <code class="docutils literal notranslate"><span class="pre">./build/packet-sniffer</span></code>.</p>
-<p>To interact with daemon packet-sniffer you could use following commands.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">start</span></code> - start writing sniffed packets into dump.txt.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">stop</span></code> - stop writing sniffed packets into dump.txt.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">reset</span></code> - reset file dump.txt.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">show</span> <span class="pre">-a</span></code> - show all info stored into dump.txt.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">show</span> <span class="pre">-i</span> <span class="pre">[IP</span> <span class="pre">address]</span></code> - show how many packets from/to some IP address are stored in dump.txt.</p></li>
+  <div class="section" id="cli">
+<h1>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h1>
+<dl class="c function">
+<dt id="c.err_handle">
+int <code class="sig-name descname">err_handle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>errmsg</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.err_handle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Handle errors from CLI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>errmsg</strong> – pointer on error message.</p></li>
+<li><p><strong>...</strong> – some additional arguments, that help to clarify type of error.</p></li>
 </ul>
-<p>If you need some help, use  <code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">--help</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">runcli</span></code>.</p>
-<p>While packet-sniffer works, it creates few files:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dump.txt</span></code> - here info about sniffed packets could be written, if you use command <code class="docutils literal notranslate"><span class="pre">./build/cli</span> <span class="pre">start</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">log.txt</span></code> - here all daemon log messages are stored.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">daemon.txt</span></code> - here the PID of daemon process is stored. It might make work with daemon easier.</p></li>
+</dd>
+</dl>
+<p>Show error messages in stderr while using CLI and finish CLI process with EXIT_FAILURE code.</p>
+<p>Return: EXIT_FAILURE.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.command_show_all">
+void <code class="sig-name descname">command_show_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.command_show_all" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Show packets written into dump.txt.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.command_show_ip">
+void <code class="sig-name descname">command_show_ip</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>str_ip</em><span class="sig-paren">)</span><a class="headerlink" href="#c.command_show_ip" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Show number of packets send and received from some IP adress.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>str_ip</strong> – IP adress in the human readable format.</p></li>
 </ul>
-<p>If you want to kill daemon packet-sniffer process, please use <code class="docutils literal notranslate"><span class="pre">SIGTERM</span></code> only.</p>
+</dd>
+</dl>
+<p>Show info only about packets written in dump.txt.</p>
+<p>Return: void.</p>
+</dd></dl>
+
 </div>
 
 
@@ -76,7 +94,8 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cmd_handler.html">Command handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sniffer.html">Packet Sniffer Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="daemon.html">Daemon Implementation</a></li>
@@ -87,7 +106,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Packet Sniffer Documentation</a></li>
+      <li>Previous: <a href="userguide.html" title="previous chapter">User guide</a></li>
       <li>Next: <a href="cmd_handler.html" title="next chapter">Command handler</a></li>
   </ul></li>
 </ul>

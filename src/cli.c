@@ -1,8 +1,8 @@
 #include <arpa/inet.h>
 #include <errno.h>
+#include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -15,16 +15,18 @@
 
 static const char *const USAGE = (
     "Invalid arguments.\n"
-    "Try '%s --help' for more information\n"
+    "Try '%s --help' to get more information\n"
 );
 
 static const char *const HELP = (
-    "*  Use folowing arguments to interact with daemon packet-sniffer.\n\n"
-    "*  start - argument is used to start writing sniffed packet information into dump.txt.\n"
-    "*  stop - argument is used to stop writing sniffed packet information into dump.txt.\n"
-    "*  reset - argument is used to clean dump.txt.\n"
-    "*  show -a - argument is used to show dump.txt.\n"
-    "*  show -i [ip] - argument is used to show number of received packets from [ip].\n\n"
+    "*  Use %s with folowing arguments to interact with daemon packet-sniffer.\n\n"
+    "*  start - argument is used to start writing sesion (write sniffed packet information into %s).\n"
+    "*  stop - argument is used to finish writing sesion (stop write sniffed packet information into %2$s).\n"
+    "*  reset - argument is used to finish writting session and clean %2$s.\n"
+    "*  show -a - argument is used to show %2$s.\n"
+    "*  show -i ${ip} - argument is used to show number of received packets from ${ip}, written in %2$s.\n\n"
+    "*  Before using commands %1$s show* make sure that you closed writing session by using command %1$s stop.\n\n"
+    "*  Work with packet-sniffer requires root privileges.\n\n"
 );
 
 static const char *cmd_start  = "start",
@@ -56,7 +58,7 @@ int main(int argc, char *argv[])
             cmd = 3;
         }
         else if (!strcmp(argv[1], cmd_help)){
-            printf(HELP);
+            printf(HELP, argv[0], DUMPFILE);
             return 0;
         }
         else{
@@ -86,14 +88,15 @@ int main(int argc, char *argv[])
     int sock;
     struct sockaddr sa1 = {AF_UNIX, ADDRESS};
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
-    
+
     if (-1 == sock)
         err_handle("Socket creation failed (%s)", strerror(errno));
 
     if (-1 == connect(sock, &sa1, sizeof(sa1) + sizeof(ADDRESS)))
-        err_handle("Connection Failed. %s\n", strerror(errno));
+        err_handle("Connection failed. %s\n", strerror(errno));
 
-    write(sock, &cmd, sizeof(cmd));
+    if (-1 == write(sock, &cmd, sizeof(cmd)))
+        err_handle("Write failed. %s\n", strerror(errno));
 
     close(sock);
     return 0;
@@ -121,6 +124,11 @@ static int err_handle(const char *errmsg, ...)
     exit(EXIT_FAILURE);
 }
 
+/**
+ * Show packets written into dump.txt.
+ *
+ * Return: void.
+ */
 static void command_show_all(void)
 {
     show = fopen(DUMPFILE, "r");
@@ -151,6 +159,14 @@ while(i < MAXLINE - 1 && (c = getc(show)) != EOF && c != '\n')
     return i;
 }
 
+/**
+ * Show number of packets send and received from some IP adress.
+ * @str_ip: IP adress in the human readable format.
+ *
+ * Show info only about packets written in dump.txt.
+ *
+ * Return: void.
+ */
 static void command_show_ip(const char *str_ip)
 {
     show = fopen(DUMPFILE, "r");

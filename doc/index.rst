@@ -13,6 +13,8 @@ This packet sniffer can be run like a daemon process and sniff all income and ou
    :maxdepth: 2
    :caption: Contents:
 
+   userguide
+
    CLI
 
    cmd_handler

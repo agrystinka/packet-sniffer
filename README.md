@@ -3,31 +3,31 @@
 #### Test assignment
 -----
 
-#### How to build
+#### Build
 
   ```
   make
   ```
 
-#### How to run
+#### Run
 
 Run the daemon using:
-
+  ```
+  sudo ./packet-sniffer
+  ```
+  or
   ```
   make run
   ```
- or
-  ```
- sudo ./build/packet-sniffer
-  ```
-**It is necessary to have root privileges while using packet-sniffer.**
+
+##### It is necessary to have root privileges while using packet-sniffer.
 
 Now daemon is running.
 
 The PID of this daemon is in daemon_id.txt.
 It might make work with daemon easier because you do not need to seek for daemon PID if you need it.
 
-#### How to use
+#### Usage
 
 To communicate with daemon use CLI.
   ```
@@ -35,12 +35,12 @@ To communicate with daemon use CLI.
   ```
 
 Avaliable commands are:
-- --help - argument is used to get more info.
-- start - argument is used to start writing sniffed packet information into dump.txt.
-- stop - argument is used to stop writing sniffed packet information into dump.txt.
-- reset - argument is used to clean dump.txt.
-- show - argument is used to show dump.txt.
-- show -i [ip] - argument is used to show received packets from [ip].
+- ``--help``- argument is used to get more info.
+- ``start`` - argument is used to start writing sniffed packet information into dump.txt.
+- ``stop`` - argument is used to stop writing sniffed packet information into dump.txt.
+- ``reset`` - argument is used to stop writing sniffed packet and clean dump.txt.
+- ``show -a`` - argument is used to show dump.txt.
+- ``show -i ${ip}`` - argument is used to show amount of received packets from ip.
 
 To call CLI help you also can use:
   ```
@@ -68,14 +68,27 @@ You might test it using:
 ```
  sudo ./build/cli stop
 ```
-- Packet-sniffer stoped writing sniffed packets into dump.txt. You might read dump.txt to get more info about traffic on default interface.
+Packet-sniffer stoped writing sniffed packets into dump.txt. You might read dump.txt to get more info about traffic on default interface.
+
+4. Read dump.txt.
+```
+ sudo ./build/cli show -a
+```
+5. Check if there are packets from [ip], for example 8.8.8.8
+```
+ sudo ./build/cli show -i 8.8.8.8
+```
+6. Reset (clean dump.txt).
+```
+ sudo ./build/cli reset
+```
 
 - To kill packet-sniffer daemon you might read PID from daemon_id.txt and use:
 ```
- sudo kill [PID]
+ sudo kill ${PID}
 ```
 Please, dont use SIGKILL, use only SIGTERM.
 
 - You might read log.txt file to get more info about packet-sniffer daemon work session.
 
-*If you need more info about packet-sniffer, read documentation, please. You could find it in ./doc/*
+*If you need more info about packet-sniffer, you could find documentation in ./doc/*

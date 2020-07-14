@@ -7,14 +7,14 @@ FILE *dump = NULL;
 FILE *loging = NULL;
 int ACTIVE = 0;
 
-void sig_term_handler(int signum)
+static void sig_term_handler(int signum)
 {
     _log(1, "SIGTERM received.\n");
     fclose(loging);
     fclose(dump);
 }
 
-void catch_sigterm()
+static void catch_sigterm()
 {
     static struct sigaction _sigact;
 
@@ -34,7 +34,7 @@ void catch_sigterm()
  *
  * Return: void.
  */
-void daemon_core(void)
+static void daemon_core(void)
 {
     _log(1, "Daemon sniffer run.\n");
     pthread_t *threads = alloca(2 * sizeof *threads);
@@ -67,7 +67,7 @@ void daemon_core(void)
  *
  * Return: void.
  */
-void deamon_create(void)
+static void deamon_create(void)
 {
     pid_t pid = 0;
     pid_t sid = 0;

@@ -11,13 +11,13 @@
  *
  * Return: void.
  */
-void cmd_start(void)
+static void cmd_start(void)
 {
     if(!ACTIVE){
         ACTIVE = 1;
         dump = fopen(DUMPFILE,"a+");
         if(!dump)
-           err_catch("Cannot open dump file 1.\n");
+           err_catch("Cannot open dump file.\n");
         _log(3, "Command START : done.\n");
     }
     else {
@@ -34,7 +34,7 @@ void cmd_start(void)
  *
  * Return: void.
  */
-void cmd_stop(void)
+static void cmd_stop(void)
 {
     if (ACTIVE) {
         ACTIVE = 0;
@@ -50,12 +50,23 @@ void cmd_stop(void)
  * Implementation of command RESET.
  *
  * Reset the dump file by deleting all information in it.
+ * Finish writing session.
+ * Use commant START to continue write caught packets into dump file.
  *
  * Return: void.
  */
-void cmd_reset(void)
+static void cmd_reset(void)
 {
-    err_catch("RESET.\n");
+    if(ACTIVE){
+        ACTIVE = 0;
+        sleep(10);    //wait until sniffer end write data into file.
+        fclose(dump);
+    }
+    dump = fopen(DUMPFILE,"w+");
+    if(!dump)
+       err_catch("Cannot open dump file.\n");
+    fclose(dump);
+    _log(3, "Command RESET : done.\n");
 }
 
 /**
@@ -100,7 +111,9 @@ void cmdhandler(void)
 
         int cmd;
 
-        ssize_t n = read(cli, &cmd, sizeof(cmd));
+        if (-1 == read(cli, &cmd, sizeof(cmd)))
+            err_catch("Read failed. %s\n", strerror(errno));
+
         _log(3, "Socket-in-server-mode got command from CLI.\n");
 
         switch (cmd) {
