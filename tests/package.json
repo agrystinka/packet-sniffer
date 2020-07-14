@@ -1,0 +1,19 @@
+{
+  "name": "demontest",
+  "version": "1.0.0",
+  "description": "Basic tests",
+  "main": "test.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "demon"
+  ],
+  "author": "Inna Humenuik",
+  "license": "ISC",
+  "devDependencies": {
+    "await-exec": "^0.1.2",
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1"
+  }
+}

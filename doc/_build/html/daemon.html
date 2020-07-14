@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daemon Implementation &#8212; packet-sniffer  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CLI" href="CLI.html" />
+    <link rel="prev" title="Packet Sniffer Implementation" href="sniffer.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="daemon-implementation">
+<h1>Daemon Implementation<a class="headerlink" href="#daemon-implementation" title="Permalink to this headline">¶</a></h1>
+<dl class="c function">
+<dt id="c.daemon_core">
+void <code class="sig-name descname">daemon_core</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.daemon_core" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Runs core functions of daemon process.</p>
+<p>Creates two threads:
+First thread works in socket-in-server-mode and handles comands from CLI.
+Second thread is packet sniffer.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.deamon_create">
+void <code class="sig-name descname">deamon_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.deamon_create" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates deamon process.</p>
+<p>Creates daemon by creating child process and killing parent one.
+Close stderr, stdin, stdout for this process.
+Writes pid of daemon process into file.
+It can be used to kill deamon process quickly without search it in process list.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">packet-sniffer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">Packet Sniffer Implementation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Daemon Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CLI.html">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmd_handler.html">Command handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logerr.html">Errors handling &amp; Loging</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="sniffer.html" title="previous chapter">Packet Sniffer Implementation</a></li>
+      <li>Next: <a href="CLI.html" title="next chapter">CLI</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Inna Humeniuk.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/daemon.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI &#8212; packet-sniffer  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Command handler" href="cmd_handler.html" />
+    <link rel="prev" title="Daemon Implementation" href="daemon.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="cli">
+<h1>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h1>
+<dl class="c function">
+<dt id="c.err_handle">
+int <code class="sig-name descname">err_handle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>errmsg</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.err_handle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Handle errors from CLI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>errmsg</strong> – pointer on error message.</p></li>
+<li><p><strong>...</strong> – some additional arguments, that help to clarify type of error.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Show error messages in stderr while using CLI and finish CLI process with EXIT_FAILURE code.</p>
+<p>Return: EXIT_FAILURE.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.command_show_all">
+void <code class="sig-name descname">command_show_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.command_show_all" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Show packets written into dump.txt.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.command_show_ip">
+void <code class="sig-name descname">command_show_ip</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>str_ip</em><span class="sig-paren">)</span><a class="headerlink" href="#c.command_show_ip" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Show number of packets send and received from some IP adress.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>str_ip</strong> – IP adress in the human readable format.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Show info only about packets written in dump.txt.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">packet-sniffer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sniffer.html">Packet Sniffer Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daemon.html">Daemon Implementation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmd_handler.html">Command handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logerr.html">Errors handling &amp; Loging</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="daemon.html" title="previous chapter">Daemon Implementation</a></li>
+      <li>Next: <a href="cmd_handler.html" title="next chapter">Command handler</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Inna Humeniuk.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/CLI.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

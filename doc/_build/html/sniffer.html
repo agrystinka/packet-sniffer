@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Sniffer Implementation &#8212; packet-sniffer  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Daemon Implementation" href="daemon.html" />
+    <link rel="prev" title="User guide" href="userguide.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="packet-sniffer-implementation">
+<h1>Packet Sniffer Implementation<a class="headerlink" href="#packet-sniffer-implementation" title="Permalink to this headline">¶</a></h1>
+<dl class="c function">
+<dt id="c.sn_start">
+void <code class="sig-name descname">sn_start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.sn_start" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Starts packet sniffing.</p>
+<p>Firstly, it gets info about dafault interface, its IP address and mask.
+Than it starts to sniff all packets transmited through this interface.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.got_packet">
+void <code class="sig-name descname">got_packet</code><span class="sig-paren">(</span>u_char *<em>args</em>, <em class="property">const</em> <em class="property">struct</em> pcap_pkthdr *<em>header</em>, <em class="property">const</em> u_char *<em>packet</em><span class="sig-paren">)</span><a class="headerlink" href="#c.got_packet" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Catches packets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – pointer on NULL.</p></li>
+<li><p><strong>header</strong> – pointer on pcap header.</p></li>
+<li><p><strong>packet</strong> – pointer on catched packet.</p></li>
+</ul>
+</dd>
+</dl>
+<p>If sniffer is in ACTIVE writing mode it writes packets info into dump file.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.printTCP">
+void <code class="sig-name descname">printTCP</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> tcphdr *<em>tcp</em><span class="sig-paren">)</span><a class="headerlink" href="#c.printTCP" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints TCP header into dump file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcp</strong> – pointer on TCP header.</p></li>
+</ul>
+</dd>
+</dl>
+<p>If TCP header is avaliable, prints source port and description port.
+.
+Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.printUDP">
+void <code class="sig-name descname">printUDP</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> udphdr *<em>udp</em><span class="sig-paren">)</span><a class="headerlink" href="#c.printUDP" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints UDP header into dump file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>udp</strong> – pointer on UDP header.</p></li>
+</ul>
+</dd>
+</dl>
+<p>If UDP header is avaliable, prints source port and description port.</p>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.printICMP">
+void <code class="sig-name descname">printICMP</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> icmphdr *<em>icmp</em><span class="sig-paren">)</span><a class="headerlink" href="#c.printICMP" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prints ICMP packet into dump file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>icmp</strong> – pointer on ICMP packet.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Return: void.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">packet-sniffer</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Packet Sniffer Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daemon.html">Daemon Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CLI.html">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmd_handler.html">Command handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logerr.html">Errors handling &amp; Loging</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="userguide.html" title="previous chapter">User guide</a></li>
+      <li>Next: <a href="daemon.html" title="next chapter">Daemon Implementation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Inna Humeniuk.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/sniffer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
