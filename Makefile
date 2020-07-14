@@ -4,12 +4,11 @@ SNIFFER = packet-sniffer
 CLI = cli
 
 SRC_SNIFFER = main.c \
- 	          logerr.c \
 	          sniffer.c \
+			  logerr.c \
 	          cmdhandler.c
 
-SRC_CLI =  cli.c \
-		   logerr.c
+SRC_CLI = cli.c
 
 BUILDDIR = ./build
 SRCDIR = ./src
@@ -20,10 +19,6 @@ INCDIR = ./inc
 all: $(BUILDDIR) $(SNIFFER) $(CLI)
 	rm -rf socket
 	rm -rf *.txt
-
-
-$(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
-	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) $(addprefix -I,$(INCDIR)) -c $< -o $@
@@ -37,24 +32,21 @@ $(CLI): $(addprefix $(BUILDDIR)/,$(SRC_CLI:.c=.o))
 $(BUILDDIR):
 	mkdir -p $@
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
 clean:
 	rm -rf $(BUILDDIR)
 
 tidy: clean
-	rm -rf *.txt
+	rm -f $(CLI)
+	rm -f $(SNIFFER)
 
 run:
-	sudo $(BUILDDIR)/$(SNIFFER)
+	sudo ./$(SNIFFER)
 
 runcli:
-	#Use: sudo ./build/cli [command]
-	sudo $(BUILDDIR)/$(CLI) --help
+	#use: sudo ./cli [command]
+	sudo ./$(CLI) --help
 
 
-# specifies linters to run on lint target
 lint: lint-clang-tidy
 
 # target to run all linters

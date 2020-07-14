@@ -1,8 +1,8 @@
-#include "logerr.h"
 #include <arpa/inet.h>
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -10,18 +10,20 @@
 #define ADDRESS "socket"
 #define MAXLINE 30
 
+#define RESET   "\033[0m"       //no color
+#define RED     "\033[1;31m"    //Errors
+
 static const char *const USAGE = (
     "Invalid arguments.\n"
     "Try '%s --help' for more information\n"
 );
 
 static const char *const HELP = (
-    " Demaon packet-sniffer is already run.\n"
-    " Use folowing arguments to interact with it.\n\n"
+    "*  Use folowing arguments to interact with daemon packet-sniffer.\n\n"
     "*  start - argument is used to start writing sniffed packet information into dump.txt.\n"
     "*  stop - argument is used to stop writing sniffed packet information into dump.txt.\n"
     "*  reset - argument is used to clean dump.txt.\n"
-    "*  show - argument is used to show dump.txt.\n"
+    "*  show -a - argument is used to show dump.txt.\n"
     "*  show -i [ip] - argument is used to show number of received packets from [ip].\n\n"
 );
 
@@ -35,6 +37,7 @@ static const char *cmd_start  = "start",
 
 FILE *show = NULL;
 
+static int err_handle(const char *errmsg, ...);
 static void command_show_all(void);
 static void command_show_ip(const char *str_ip);
 
@@ -78,19 +81,44 @@ int main(int argc, char *argv[])
     else {
         err_handle(USAGE, argv[0]);
     }
+
     /*Create and open socket to comuticate with packet sniffer daemon*/
     int sock;
     struct sockaddr sa1 = {AF_UNIX, ADDRESS};
-
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
+    
+    if (-1 == sock)
+        err_handle("Socket creation failed (%s)", strerror(errno));
 
     if (-1 == connect(sock, &sa1, sizeof(sa1) + sizeof(ADDRESS)))
-        err_handle("Connection Failed \n", strerror(errno));
+        err_handle("Connection Failed. %s\n", strerror(errno));
 
     write(sock, &cmd, sizeof(cmd));
 
     close(sock);
     return 0;
+}
+
+/**
+ * Handle errors from CLI.
+ * @errmsg: pointer on error message.
+ * @...: some additional arguments, that help to clarify type of error.
+ *
+ * Show error messages in stderr while using CLI and finish CLI process with EXIT_FAILURE code.
+ *
+ * Return: EXIT_FAILURE.
+ */
+static int err_handle(const char *errmsg, ...)
+{
+    va_list va;
+    va_start(va, errmsg);
+    if (errmsg) {
+        fprintf(stderr, "%sError:%s ", RED, RESET);
+        vfprintf(stderr, errmsg, va);
+        fprintf(stderr, "\n");
+    }
+    va_end(va);
+    exit(EXIT_FAILURE);
 }
 
 static void command_show_all(void)

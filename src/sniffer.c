@@ -6,12 +6,10 @@
 #include <netinet/udp.h>       //Provides declarations for udp header
 #include <netinet/tcp.h>       //Provides declarations for tcp header
 #include <netinet/ip.h>        //Provides declarations for ip header
-#include <netinet/if_ether.h>  //For ETH_P_ALL
+#include <netinet/if_ether.h>
 #include <time.h>
 
-#define DUMPFILE "dump.txt"
-
-/*For numerating got packets*/
+/* for numerating got packets */
 time_t rawtime;
 struct tm *timeinfo;
 
@@ -24,7 +22,7 @@ const struct icmphdr *icmp;           /* The ICMP header */
 const struct ip      *ip;             /* The IP header */
 
 /* declare pointers to packet headers */
-const struct sniff_ethernet *ethernet;  /* The ethernet header [1] */
+const struct sniff_ethernet *ethernet;
 int size_ip = 0;
 
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
@@ -52,15 +50,14 @@ void sn_start(void)
     bpf_u_int32 maskp;/* subnet mask */
     struct in_addr addr;
 
-    char filter_exp[] = "ip";  /* filter expression */
+    /* filter expression that will allow to catch only IP packets */
+    char filter_exp[] = "ip";
     struct bpf_program fp;   /* compiled filter program (expression) */
 
     /* ask pcap to find a valid device for use to sniff on */
     dev = pcap_lookupdev(errbuf);
     if(!dev)
         err_catch("Couldn't find default device:\n%s", errbuf);
-    /* print out device name */
-    printf("DEV: %s\n", dev);
 
     /* ask pcap for the network address and mask of the device */
     ret = pcap_lookupnet(dev, &netp, &maskp, errbuf);
@@ -70,12 +67,6 @@ void sn_start(void)
     /* get the network address in a human readable form */
     addr.s_addr = netp;
     net = inet_ntoa(addr);
-    printf("NET: %s\n", net);
-
-    /* do the same as above for the device's mask */
-    addr.s_addr = maskp;
-    mask = inet_ntoa(addr);
-    printf("MASK: %s\n",mask);
 
     /* open capture device */
     handle = pcap_open_live(dev, SNAP_LEN, 1, 1000, errbuf);
@@ -86,18 +77,20 @@ void sn_start(void)
     if (pcap_compile(handle, &fp, filter_exp, 0, net) == -1)
         err_catch("Couldn't parse filter %s:\n%s\n", filter_exp, pcap_geterr(handle));
     _log(3, "pcap_compile : done\n");
+
     /* apply the compiled filter */
     if (pcap_setfilter(handle, &fp) == -1)
          err_catch("Could not install filter %s:\n%s\n", filter_exp, pcap_geterr(handle));
     _log(3, "pcap_setfilter : done\n");
 
+    /* start eternal loop by using -1 as number of iterationt*/
     int loopret = pcap_loop(handle, -1, got_packet, NULL);
     _log(3, "pcap_loop : done\n");
 
     if (loopret == -1)
         err_catch("%s\n", pcap_geterr(handle));
     if (loopret == -2)
-        _log(1, "Sniffing succesefully finished.");
+        _log(1, "Sniffing finished.");
 }
 
 /**
@@ -114,8 +107,8 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 {
     _log(2, "Sniffer got packet.\n");
 
-    /*if user starrted to collect sniffed packets by usiing command START*/
-    if(ACTIVE == 1){
+    /*if user started to collect sniffed packets by using command START*/
+    if(ACTIVE){
         _log(2, "Sniffer is writting packet.\n");
 
         /*get Current time*/
@@ -156,7 +149,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
                 printICMP(icmp);
                 break;
             default:
-                fprintf(dump, "# Protocol unknown\n");
+                fprintf(dump, "Protocol: unknown\n");
                 break;
         }
         fprintf(dump, "\n\n");

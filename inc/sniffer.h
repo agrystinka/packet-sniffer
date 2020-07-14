@@ -17,10 +17,11 @@
 
 /* Ethernet header */
 struct sniff_ethernet {
-        u_char  ether_dhost[ETHER_ADDR_LEN];    /* destination host address */
-        u_char  ether_shost[ETHER_ADDR_LEN];    /* source host address */
-        u_short ether_type;                     /* IP? ARP? RARP? etc */
+        u_char  ether_dhost[ETHER_ADDR_LEN];    /* destination address */
+        u_char  ether_shost[ETHER_ADDR_LEN];    /* source address */
+        u_short ether_type;                     /* IP, ARP, etc. */
 };
 
 void sn_start();
+
 #endif

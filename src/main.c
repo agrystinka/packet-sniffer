@@ -7,7 +7,6 @@ FILE *dump = NULL;
 FILE *loging = NULL;
 int ACTIVE = 0;
 
-
 void sig_term_handler(int signum)
 {
     _log(1, "SIGTERM received.\n");
@@ -43,9 +42,13 @@ void daemon_core(void)
     catch_sigterm();
 
     int f_sinsm = pthread_create(&threads[0], NULL, &cmdhandler, NULL);
+    if(f_sinsm != 0)
+        err_catch("Cannot create socket-in-server-mode thread.\n");
     _log(3, "Socket-in-server-mode thread started.\n");
 
     int f_sn= pthread_create(&threads[1], NULL, &sn_start, NULL);
+    if(f_sn != 0)
+        err_catch("Cannot create sniffer thread.\n");
     _log(3, "Sniffer thread started.\n");
 
     pthread_join(threads[0], NULL);
@@ -102,26 +105,27 @@ void deamon_create(void)
     fprintf(loging, " Daemon process: %d\n", sid);
 
     FILE *d_id = fopen(IDFILE, "w+");
-    if(!d_id)
+    if(!d_id){
         _log(1, "Did not saved daemon id into file.\n");
-    fprintf(d_id, "%d\n", sid);
-    fclose(d_id);
+    }
+    else{
+        fprintf(d_id, "%d\n", sid);
+        fclose(d_id);
+    }
 }
 
 int main(void)
 {
     loging = fopen(LOGFILE, "w");
-
-    deamon_create();
-
-    while (1) {
-        fprintf(loging, " Daemon started.\n");
-        daemon_core();
-        break;
+    if(!loging) {
+        fprintf(stderr, "Cannot open daemonlog file.\n");
+        exit(EXIT_FAILURE);
     }
 
+    deamon_create();
+    daemon_core();
+
     fprintf(loging, " Daemon terminated.\n");
-    printf("Daemon terminated.\n");
     fclose(loging);
     return 0;
 }

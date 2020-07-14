@@ -1,5 +1,6 @@
 #include "cmdhandler.h"
 #include "logerr.h"
+#include "main.h"
 
 /**
  * Implementation of command START.
@@ -12,15 +13,11 @@
  */
 void cmd_start(void)
 {
-    if(ACTIVE == 0){
-        printf("START.\n");
+    if(!ACTIVE){
         ACTIVE = 1;
-        /*Open dump file*/
         dump = fopen(DUMPFILE,"a+");
         if(!dump)
            err_catch("Cannot open dump file 1.\n");
-
-        /*Open dump file*/
         _log(3, "Command START : done.\n");
     }
     else {
@@ -39,11 +36,10 @@ void cmd_start(void)
  */
 void cmd_stop(void)
 {
-    if (ACTIVE == 1) {
+    if (ACTIVE) {
         ACTIVE = 0;
         fclose(dump);
         _log(3, "Command STOP : done.\n");
-        //fclose(loging);
     }
     else {
         _log(1, "Writing dump into file is already DISACTIVE.\n");
@@ -59,13 +55,7 @@ void cmd_stop(void)
  */
 void cmd_reset(void)
 {
-    if(dump != NULL)
-        fclose(dump);
-    dump = fopen("dump.txt","w+");
-    if(!dump)
-       err_catch("Cannot open dump file 1.\n");
-    fclose(dump);
-    _log(3, "Command RESET : done.\n");
+    err_catch("RESET.\n");
 }
 
 /**
@@ -98,11 +88,14 @@ void cmdhandler(void)
     if (-1 == bind(sock, &sa0, sizeof(sa0) + sizeof(ADDRESS)))
         err_catch("Socket bind failed (%s)", strerror(errno));
 
-    listen(sock, 1);
-    int cli;
+    if (-1 == listen(sock, 1))
+        err_catch("Socket listen failed. (%s)", strerror(errno));
 
+    int cli;
     while(1) {
         cli = accept(sock, NULL, NULL);
+        if (-1 == cli)
+            err_catch("Cannot connect to CLI.", strerror(errno));
         _log(3, "Socket-in-server-mode connected.\n"); //log
 
         int cmd;
