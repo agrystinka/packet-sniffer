@@ -20,12 +20,16 @@ static const char *const USAGE = (
 
 static const char *const HELP = (
     "*  Use %s with folowing arguments to interact with daemon packet-sniffer.\n\n"
-    "*  start - argument is used to start writing sesion (write sniffed packet information into %s).\n"
-    "*  stop - argument is used to finish writing sesion (stop write sniffed packet information into %2$s).\n"
+    "*  start - argument is used to start writing sesion"
+    " (write sniffed packet information into %s).\n"
+    "*  stop - argument is used to finish writing sesion"
+    " (stop write sniffed packet information into %2$s).\n"
     "*  reset - argument is used to finish writting session and clean %2$s.\n"
     "*  show -a - argument is used to show %2$s.\n"
-    "*  show -i ${ip} - argument is used to show number of received packets from ${ip}, written in %2$s.\n\n"
-    "*  Before using commands %1$s show* make sure that you closed writing session by using command %1$s stop.\n\n"
+    "*  show -i ${ip} - argument is used to show number of received packets"
+    " from ${ip}, written in %2$s.\n\n"
+    "*  Before using commands %1$s show* make sure that you closed"
+    " writing session by using command %1$s stop.\n\n"
     "*  Work with packet-sniffer requires root privileges.\n\n"
 );
 
@@ -74,7 +78,7 @@ int main(int argc, char *argv[])
     else if (4 == argc &&
              !strcmp(argv[1], cmd_show) && //check if command is "show"
              !strcmp(argv[2], show_ip)) {  //check if command agr is "-i"
-                struct in_addr *ip;
+                struct in_addr *ip = NULL;
                 if(!inet_aton(argv[3], ip))  //check if asked IP is valid
                    err_handle("Invalid IP address.\n");
                 command_show_ip(argv[3]);
@@ -85,7 +89,7 @@ int main(int argc, char *argv[])
     }
 
     /*Create and open socket to comuticate with packet sniffer daemon*/
-    int sock;
+    int sock = 0;
     struct sockaddr sa1 = {AF_UNIX, ADDRESS};
     sock = socket(AF_UNIX, SOCK_STREAM, 0);
 
@@ -133,7 +137,7 @@ static void command_show_all(void)
 {
     show = fopen(DUMPFILE, "r");
     if (!show)
-        err_handle("Cannot open %s. It might be using by another process.\nTry to use command STOP, firstly.\n", DUMPFILE);
+        err_handle("Cannot open %s\n.", DUMPFILE);
     char c;
 
     /* Print each character in the file */
@@ -171,7 +175,7 @@ static void command_show_ip(const char *str_ip)
 {
     show = fopen(DUMPFILE, "r");
     if (!show)
-        err_handle("Cannot open %s. It might be using by another process.\nTry to use command STOP, firstly.\n", DUMPFILE);
+        err_handle("Cannot open %s\n.", DUMPFILE);
 
     char line[MAXLINE];
     int found = 0;

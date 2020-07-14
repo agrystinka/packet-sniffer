@@ -43,7 +43,6 @@ void sn_start(void)
 
     char *dev; /* name of the device to use */
     char *net; /* dot notation of the network address */
-    char *mask;/* dot notation of the network mask    */
     int ret;   /* return code */
     char errbuf[PCAP_ERRBUF_SIZE];
     bpf_u_int32 netp; /* ip          */
@@ -127,8 +126,8 @@ static void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_c
         ip = (struct ip*)(packet + SIZE_ETHERNET);
         size_ip = (((ip)->ip_hl) & 0x0f)*4;
         if (size_ip < 20){
-            fprintf(dump, "Invalid IP header length: %u bytes\n\n", size_ip);
-            return 0;
+            fprintf(dump, "Invalid IP header length: %d bytes\n\n", size_ip);
+            return;
         }
 
         fprintf(dump, "SRC IP: %s\n", inet_ntoa(ip->ip_src));

@@ -15,12 +15,12 @@ This packet sniffer can be run like a daemon process and sniff all income and ou
 
    userguide
 
-   CLI
-
-   cmd_handler
-
    sniffer
 
    daemon
+
+   CLI
+
+   cmd_handler
 
    logerr

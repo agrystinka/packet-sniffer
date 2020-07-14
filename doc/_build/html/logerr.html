@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLI &#8212; packet-sniffer  documentation</title>
+    <title>Errors handling &amp; Loging &#8212; packet-sniffer  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,8 +15,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Command handler" href="cmd_handler.html" />
-    <link rel="prev" title="Daemon Implementation" href="daemon.html" />
+    <link rel="prev" title="Command handler" href="cmd_handler.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,12 +32,35 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="cli">
-<h1>CLI<a class="headerlink" href="#cli" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="errors-handling-loging">
+<h1>Errors handling &amp; Loging<a class="headerlink" href="#errors-handling-loging" title="Permalink to this headline">¶</a></h1>
 <dl class="c function">
-<dt id="c.err_handle">
-int <code class="sig-name descname">err_handle</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>errmsg</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.err_handle" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Handle errors from CLI.</p>
+<dt>
+<code class="sig-name descname">_log(lvl, msg)</code></dt>
+<dd><p>Macros that implements daemon loging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lvl</strong> – type of log.</p></li>
+<li><p><strong>msg</strong> – log message.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>It writes 3 types of logs:</dt><dd><ul class="simple">
+<li><p>INFO - short loging of main daemon actions.</p></li>
+<li><p>SNIFFER logs - messages about catched packets.</p></li>
+<li><p>DEBUG - more detailed logging of daemon actions.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Return: void.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.err_catch">
+int <code class="sig-name descname">err_catch</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>errmsg</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.err_catch" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Catches errors from daemon.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -47,30 +69,9 @@ int <code class="sig-name descname">err_handle</code><span class="sig-paren">(</
 </ul>
 </dd>
 </dl>
-<p>Show error messages in stderr while using CLI and finish CLI process with EXIT_FAILURE code.</p>
+<p>Writes error message into log.txt file and close log.txt, dump.txt.
+Finishes daemon proces with EXIT_FAILURE code.</p>
 <p>Return: EXIT_FAILURE.</p>
-</dd></dl>
-
-<dl class="c function">
-<dt id="c.command_show_all">
-void <code class="sig-name descname">command_show_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.command_show_all" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Show packets written into dump.txt.</p>
-<p>Return: void.</p>
-</dd></dl>
-
-<dl class="c function">
-<dt id="c.command_show_ip">
-void <code class="sig-name descname">command_show_ip</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>str_ip</em><span class="sig-paren">)</span><a class="headerlink" href="#c.command_show_ip" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Show number of packets send and received from some IP adress.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>str_ip</strong> – IP adress in the human readable format.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Show info only about packets written in dump.txt.</p>
-<p>Return: void.</p>
 </dd></dl>
 
 </div>
@@ -97,17 +98,16 @@ void <code class="sig-name descname">command_show_ip</code><span class="sig-pare
 <li class="toctree-l1"><a class="reference internal" href="userguide.html">User guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sniffer.html">Packet Sniffer Implementation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="daemon.html">Daemon Implementation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CLI.html">CLI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cmd_handler.html">Command handler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logerr.html">Errors handling &amp; Loging</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Errors handling &amp; Loging</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="daemon.html" title="previous chapter">Daemon Implementation</a></li>
-      <li>Next: <a href="cmd_handler.html" title="next chapter">Command handler</a></li>
+      <li>Previous: <a href="cmd_handler.html" title="previous chapter">Command handler</a></li>
   </ul></li>
 </ul>
 </div>
@@ -141,7 +141,7 @@ void <code class="sig-name descname">command_show_ip</code><span class="sig-pare
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/CLI.rst.txt"
+      <a href="_sources/logerr.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

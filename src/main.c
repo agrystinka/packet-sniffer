@@ -103,8 +103,9 @@ static void deamon_create(void)
     close(STDERR_FILENO);
 
     fprintf(loging, " Daemon process: %d\n", sid);
-
-    FILE *d_id = fopen(IDFILE, "w+");
+    
+    /* Save daemon PID */
+    FILE *d_id = fopen("/var/run/packet-sniffer.pid", "w+");
     if(!d_id){
         _log(1, "Did not saved daemon id into file.\n");
     }

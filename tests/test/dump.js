@@ -44,7 +44,7 @@ describe.only('Check for creating dump', () => {
         });
 
 
-        const filePath = '../daemon_id.txt';
+        const filePath = '/var/run/packet-sniffer.pid';
         const pid = await readFilePromise(filePath, 'utf-8');
         const pidToInt = parseInt(pid)
 

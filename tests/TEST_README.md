@@ -21,7 +21,7 @@ npm install
 ```bash
 make tidy
 make
-export ROOT_PASS=${root_pass}
 cd tests
+export ROOT_PASS=${root_pass}
 npm run test
 ```

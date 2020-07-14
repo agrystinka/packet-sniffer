@@ -10,6 +10,8 @@ SRC_SNIFFER = main.c \
 
 SRC_CLI = cli.c
 
+SRC = $(SRC_SNIFFER) $(SRC_CLI)
+
 BUILDDIR = ./build
 SRCDIR = ./src
 INCDIR = ./inc
@@ -17,8 +19,8 @@ INCDIR = ./inc
 .PHONY: all clean tidy
 
 all: $(BUILDDIR) $(SNIFFER) $(CLI)
-	rm -rf socket
-	rm -rf *.txt
+	rm -f socket
+	rm -f *.txt
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) $(addprefix -I,$(INCDIR)) -c $< -o $@
@@ -46,13 +48,11 @@ runcli:
 	#use: sudo ./cli [command]
 	sudo ./$(CLI) --help
 
+lint: lint-all
 
-lint: lint-clang-tidy
-
-# target to run all linters
 lint-all: | lint-clang-tidy lint-splint lint-oclint lint-cppcheck
 _oclint := oclint
-_splint := splint +checks $(addprefix -I ,$(INCDIRS))
+_splint := splint +checks $(addprefix -I ,$(INCDIR))
 _cppcheck := cppcheck -q -j$$(($$(nproc)+1)) $(addprefix -I,$(INCDIR)) \
 	--platform=unix64 \
 	--enable=warning,style,performance,portability,information \

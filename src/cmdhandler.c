@@ -59,7 +59,7 @@ static void cmd_reset(void)
 {
     if(ACTIVE){
         ACTIVE = 0;
-        sleep(10);    //wait until sniffer end write data into file.
+        sleep(1);    //wait until sniffer end write data into file.
         fclose(dump);
     }
     dump = fopen(DUMPFILE,"w+");
@@ -102,8 +102,8 @@ void cmdhandler(void)
     if (-1 == listen(sock, 1))
         err_catch("Socket listen failed. (%s)", strerror(errno));
 
-    int cli;
     while(1) {
+        int cli;
         cli = accept(sock, NULL, NULL);
         if (-1 == cli)
             err_catch("Cannot connect to CLI.", strerror(errno));
