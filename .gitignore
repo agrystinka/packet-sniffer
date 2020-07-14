@@ -2,6 +2,9 @@
 
 # Project ignores
 *.txt
+/packet-sniffer
+/cli
+build/
 
 # Prerequisites
 *.d
