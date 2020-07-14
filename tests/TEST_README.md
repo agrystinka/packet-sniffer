@@ -1,3 +1,12 @@
+### From ./packet-sniffer
+```bash
+
+make tidy
+
+make
+
+cd tests
+```
 ### Prepare
 - Install node
 ```bash
@@ -19,9 +28,7 @@ npm install
 ### Run test
 
 ```bash
-make tidy
-make
-cd tests
 export ROOT_PASS=${root_pass}
+
 npm run test
 ```
